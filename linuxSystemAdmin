@@ -1,0 +1,280 @@
+
+ls -lSh       ls by file size
+ls -lt        ls by date
+ls -ltr       ls by date (reveres)
+ls 2>/dev/null        redirect err to null
+
+find . -perm 777        find all files from . with 777 permissions
+find . -perm -u=w       find all files from . with user write permissions
+
+uname -a       print system information
+
+man -k <string>              
+apropos <string>       both find commands similar too         
+
+whatis        display 1 line manual description      
+
+stat <file>       display file information.
+
+-- compress ----
+
+gzip <file>       compress a file
+gzip -l <file>.gz       compressed file info
+gunzip <file>.gz        uncompress
+
+bzip2       compression is better but slower.
+
+-- archive ----
+
+tar -czf tarball.tar.gz /home/dir /home/file1 /home/file2     create a compressed tarball of ... (gzip)
+tar -cjf tarball.tar.gz /home/dir /home/file1 /home/file2     create a compressed tarball of ... (bzip2)
+
+tar -rvf tarball.tar /home/file /home/fileB                   append to tarball        
+tar -tr tarball.tat                                          list files in tarball
+tar -xf tarball.tar/file1 .                                   restore 1 file
+tar -xf tarball.tar                                           restore all files
+
+tar -j        compress tarball (bzip2)
+tar -z        compress tarball (gzip)
+
+wc <file>       -l  lines, -w  words, -c bytes, -m characters
+
+cp file file1 -i        with confirm, default is overwrite
+
+ln <file> <file>        create a hard linke between files. (many files with the same inode metadata).
+ln -s <file><file>      create a soft link. differnt inodes.
+ls -li        list files with inode numbers
+
+tac     prints a file from the bottom up.
+
+chmod -v u-rwx,g-rwx,o-rwx file       subtract permissions for user, group, other
+chmod -v u+rwx,g+rwx,o+rwx file       add
+chmod -v u=rwx,g=rwx,o=rwx file       assign.
+
+umask 002       set rw,rw,r for new files.
+
+who       show who is logged in
+w         more detailed 
+
+/usr/bin/time -v <command>       detailed performance of a command
+
+adduser <newUserName>
+
+getent group        list groups with the gid's.
+groupadd -g <gid> <groupName>        add new group
+usermod -aG <groupName> <user>       add user to group
+chown <user>:<group> /dir       change owner and group of a /dir
+
+chmod g+s <file><dir>       setgid special permission bit (non group have group permissions for ...)
+chmod u+s <file>            setuid special permission bit (non user have user permissions for ...)
+chmod o+t <dir>             set sticky bit, prevent delete of file from another user.  
+
+find . -name -exec cmd {} \;        find file by name execute command
+find . -iname                       case insensative.
+find . -user      UID -delete       find by UIS and delete           
+find . -group ! -user               GID not of user 
+find . -inum      inode
+find . -atime     access time
+find . -mtime     modification time
+find . -size -1M    files less than 1M
+find . -size +1M -not -size +2M    files greater than 1M not greater than 2M
+find . -type d -maxdepth 3        find type /dir maxdepth
+find . -perm 775
+find . -perm -ug=rwx
+
+find . -size +500M -exec ls -al {} \;        find files and exec ls -al
+find . -size +500M -ok ls -al {} \;        find files and ok before command
+
+
+
+
+
+
+grep -rnw '/path/to/somewhere/' -e 'pattern'        search recursive files that contain string
+find . -name "*.bb"                                 find recursive files with string
+
+lsof -ti :8080        list process using port ?          
+
+journalctl -u <serviceName>.service           journalctl log of a service
+journalctl -xefu <serviceName>.service        journalctl log of service (real time ?)
+
+lsmod       list installed kernel modules
+
+SMTP      25
+DNS       53
+FTP       20 (data transfer)  21 (connection)
+DHCP      68 (client) 67 (server)
+SSH       22
+
+df -i       how many inodes are left 
+
+readlink -f <file>       print file path of file
+
+lsof        list of files opend by which process
+
+timeout 1s top        timeout a command after 1s,1m
+while true; do timeout 30m ./script.sh; done        Restart every 30 minutes
+____________________________________________________________________________________________________
+
+There are disk based, network based and memory based file systems.
+There are 2 types of commands, priviledged and non-priviledged.
+Files in /tmp/ are deleted after a defualt 10 days.
+A softlink is like a shortcut to another file.
+tar is tape archive. Create, append, update, list, extract, compress to/from a single file (tarball).
+
+Files have metadata called an inode, 128 bytes.
+An inode has a link to a filename.
+The inode does not store the filename. 
+The <inode : filename> mappings are kept in the dir's metadata/inode.
+All links eventuall point ot the same physical data locaiton.
+
+A hardlink is many filenames to 1 inode. (m:1). A files have the same metadata/inode.
+Changes to the inode metadata can be made with each filename.
+
+softlink is like a shortcut
+Each softlinke has a uniqe inode with a filepath to the file.
+
+User, Group, Other permissions.
+default permissions are set on the umask (user mask).
+
+3 special permission bits for dir's and executables to respond differently to non-root users.
+setuid        non users will have run permissions like a user.
+setgid        non group members will have run/dir permissions like a group member.
+sticky bit    set on a public dir prevents file erasures from non-owners.
+
+The number of inodes on a filesystem is fixed. it is possible to run out of inodes withoutrunning out of disk space.
+
+____________________________________________________________________________________________________
+
+hostname       print hostname
+hostnamectl       more detailed hostname
+
+sudo systemctl restart systemd-hostnamed        restart hostname
+
+Networking, Devices, Connections
+
+To share resources/data.
+A switch interconnects computers to communicate on the network.
+To communicate 1 of its network devices must have a connection profile. with a unique IP,hostname other essential parameters.
+The profile may be configured statically or dynamically from a DHCP server for a set amount of time.
+A few files define the configuration. 
+Using a switch the network can be expanded to include, additional computers, printers, scanners, storage, (nodes).
+Computers on the network can be configured to be a file-server, storage server, gateway to the internet.
+
+Configure network interfaces, 
+Connection profiles,
+Client/ server setups.
+
+A 'hostname' is a unique label assigned to a node to identify it on the network.
+/etc/hostname/ --> @witch-x220
+
+Internet Protcol V.4      IpV4        A unique 32 bit software address needed to communicate.
+have  'network bits'  and   'node bits'.  (this network, this node).
+network address is all 0's
+broadcast is al 1's.
+
+The node portion can be subnetted to id more sub-networks. Improving network performance, reducing traffic, easier admin.
+subnet mask = the 'network' portion + the 'subnet bits' ... 'node' bits.
+
+It -- does not -- increase the # of ip address in the network. It actually reduces the usable set.
+All nodes in a subnet share the same subnet mask.
+Each subnet acts as an isolated network, requiring a router to talk to other subnets. 
+
+192.168.1.10/22       <-- IpV4 + CIDR/subnet mask
+
+protocol = rules for formatting, encoding, speed, flow, synchronisation, error, sequencing. 
+
+/etc/protocols      <-- protocol list
+/etc/services       <-- ports
+
+TCP       reliable, established a connection with the peer TCP layer, error checking with request packets, sequencing, ACKs, guaranteed data delivery.
+UDP       unreliable, conectionaless, no error checking, no Acks,
+
+A private port is generated just for the session between client and its server process.
+
+IMCP  Internet Control Message Protocol  
+
+
+Ethernet Address/physical,link-layere/MAC address =    differn names for the 48 bit  unique node address.
+
+IP - And - Hardware address     work hand-in-hand. Both are critical to ID the correct destination node on a network.
+
+ARP   (Address Resolution Protocol) is used to enable IP and Hardware address to work in tandem.
+      ARP determines the Hardware address of the destination node when the IP address is known.
+
+IpV6    128 bit software address.
+
+
+NICs    NetworkInterfaceCards provide (1 or many) Ethernet ports. With a 'Connection Profile'. 
+        A network device can have many 'Connection Profiles' but only 1 active profile at a time.
+
+Network Interface Names:      eth, em, wlan, lo, wlp3s0, docker0, 
+
+Each network connection has a 'Connection Profile' file read at connection activation stored at:
+/etc/sysconfig/network-scripts
+
+nmcli
+nmtui
+nm-connection-editor      to view, modify, remove, activate, deactivate devices + network connections.
+
+Connection Profile names:      TALKTALK56EC48, raspi-webgui, docker0, br-009090, Wired connection 1
+Attached to Device:            wlp3s0, enp0s3
+
+nmcli d s       networkManager list all network device statuses
+
+
+Each IP address on the system should have a hostname assigned to it.
+In a sizable network it is prudent to have some sort of hostname -->  IP address resolution service.
+Such as DNS (Domain Name System) for large networks.
+For small networks Host Tables in       /etc/hosts      but needs to be updates on each system.
+
+ping      If a ping fails you need to check if the NIC is seated properly, it's driver is installed, the network cable is secure,
+          the IP and netmask values are set correctly and the default/ statis route is accurate.
+
+
+p 181
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

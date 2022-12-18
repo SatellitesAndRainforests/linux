@@ -1,0 +1,167 @@
+troubleshooting a service
+
+failing to start a daemon ?
+if a command doesn't work maybe try it with sudo.
+
+1 _____________________________________________________________________________________
+
+systemctl status <serviceName>        -l  will not truncate lines,     
+                                      --no-pager   will print the entire log.
+
+systemctl list-units --type=service --all             list all services (loaded, running, inactive).
+systemctl list-units --type=service                   list loaded services (running,active,failed).
+systemctl list-units --type=service --state=running   list loaded and running services.
+systemctl list-unit-files --state=enabled             list enabled services.
+systemctl list-unit-files --state=disabled            list disabled services.
+
+systemctl show <serviceName> | grep Path              print filepath of service.
+
+pkg-config systemd --variable=systemdsystemunitdir
+pkg-config systemd --variable=systemduserunitdir
+
+/lib/systemd/system                                   system services
+/usr/lib/systemd/user                                 user services.
+
+systemctl daemon-reload         re-reads and reloads all unit config files and recreates the dependency tree.
+systemctl enable/disable        for start at boot
+
+systemctl is-active         is running
+systectl is-enabled         is running
+systemctl kill              kill all process of
+systemctl reload            service re-reads it's conf files.
+
+                            load means it is loaded in memory
+                            error could not load file to memory
+                            not-found - no file assoicated with this unit found.
+                            bad-setting - a key setting is missed.
+                            masked - the unit configuration file is masked. --> Stops from being enabled/disabled.
+sudo systemctl unmask       to unmask - can be activated/deactivated.
+                            enabled/disabled - starts at boot
+
+                            running
+                            exited - completed a 1 time configuration.
+                            waiting - running waiting for an event
+                            inactive - not running
+                            activating/deactivating - process of 
+                            failed - crashed or could not be started.
+
+
+                            
+[Unit]
+Description=set nvCamStatus.txt to 'idle' on boot
+After=multi-user.target
+
+[Service]
+Type=idle
+WorkingDirectory=/home/pi/nightCam
+ExecStart=/bin/bash bootScript.sh
+
+[Install]
+WantedBy=multi-user.target
+ 
+
+journalctl -b               print all events from last system reboot
+journalctl -u <serviceName>
+journalctl --since 2019-10-10 --until 2019-10-16
+journalctl --since today -p warning
+journclctl -f               realtime logs (f for follow)
+journalctl -f -t sshd       realtime print of logs for a service (f for follow).
+
+
+"services usually fail because of a missing dependency ( a file or a mount point), missing conf, incorrect permissions.
+
+
+2 _____________________________________________________________________________________
+
+If    systemctl -l <serviceName> --no-pager    journalctl   can be used to examine systemd logs.
+
+journalctl -u ssh.service --since today --no-pager            BE USRE TO USE THE -u FLAG
+
+(98)Address already in use: AH00072: make_sock: could not bind to address [::]:80         could not bind to :80 on all IPv6 interaces.
+(98)Address already in use: AH00072: make_sock: could not bind to address 0.0.0.0:80      could not bind to :80 on all IPv4 interfaces. 
+
+
+ss      can be used to gather information about the state of a system's network sockets. 
+
+sudo netstat -tnlp
+sudo netstat -plunt           shows all the process that are using ports on the server.
+sudo lsof -n -i 
+sudo ss -4 -tlnp | grep <portNumber>       -4 restricts socket information to IPv4.
+                                           -t retricts socket information to TCP sockets only.
+                                           -l displays all listening sockets with -4 -t options.
+                                           -n prints port numbers instead of protcol names (:ssh,:http).
+                                           -p outputs information about the process that is bound to the port.
+
+LISTEN    0    511        0.0.0.0:80   0.0.0.0:*   users:(("nginx",pid=40,fd=6))           indicates (processID,40), (bound-to :80), 
+
+ps -p <processID>      prints name,
+
+
+
+3 _____________________________________________________________________________________
+
+with the processID and process name using the port identified we can decide how to resolve the error.
+stopping the process, reconfigure 1 of the 2 services to listen on a differnt port.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ _____________________________________________________________________________________
+Design Excersize
+ _____________________________________________________________________________________
+
+Airgap =  not connected to the Internet or to another system connected to the Internet.
+          This could be implemented by a software firewall only.
+          You cant remotley hack a computer that is not connected to the Internet.
+          
+A true Airgap = physically isolated from the Internet.
+          Data can only pass to it via a USB flash drive/other removable media/ cable 
+          connecting two computers directly.
+
+Software firewall airgapped computers can be breached, however, by hacks and insecure conf
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
